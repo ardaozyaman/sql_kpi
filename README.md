@@ -4,6 +4,8 @@
 
 Bu workflow, PostgreSQL üzerinde temel veritabanı işlemlerini örneklemek için yapıldı
 
+- Record -> https://www.loom.com/share/7e40be953ac542e2a580df10ff4bd2ad?sid=435a1849-8985-455e-8821-acb533d34992
+
 - Tablolar oluşturma
 - JOIN ve UNION sorguları çalıştırma
 - TRUNCATE ile tabloyu temizleme
