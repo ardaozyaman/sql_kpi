@@ -1,0 +1,343 @@
+{
+  "name": "Sql kpi workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ebe9878d-a382-43df-8b8d-16fe492c3068",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE Customers (\n    customer_id SERIAL PRIMARY KEY,\n    name VARCHAR(50),\n    city VARCHAR(50)\n);\n\nCREATE TABLE Orders (\n    order_id SERIAL PRIMARY KEY,\n    customer_id INT REFERENCES Customers(customer_id),\n    product VARCHAR(50)\n);\n\nINSERT INTO Customers (name, city) VALUES\n('Ali', 'Istanbul'),\n('Ayse', 'Ankara'),\n('Mehmet', 'Izmir');\n\nINSERT INTO Orders (customer_id, product) VALUES\n(1, 'Laptop'),\n(2, 'Telefon'),\n(1, 'Tablet');\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        220,
+        -320
+      ],
+      "id": "4f7e69ee-f675-4c86-ba22-1a749637aaf1",
+      "name": "create tables",
+      "credentials": {
+        "postgres": {
+          "id": "8CCQqgahqVOpfPOO",
+          "name": "Postgres kpi Acc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "CREATE TABLE CustomersDel (\n    customer_id SERIAL PRIMARY KEY,\n    name VARCHAR(50),\n    city VARCHAR(50)\n);\n\nCREATE TABLE OrdersDel (\n    order_id SERIAL PRIMARY KEY,\n    customer_id INT REFERENCES Customers(customer_id),\n    product VARCHAR(50)\n);\n\nINSERT INTO CustomersDel (name, city) VALUES\n('Ali', 'Istanbul'),\n('Ayse', 'Ankara'),\n('Mehmet', 'Izmir');\n\nINSERT INTO OrdersDel (customer_id, product) VALUES\n(1, 'Laptop'),\n(2, 'Telefon'),\n(1, 'Tablet');\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        220,
+        160
+      ],
+      "id": "b9651574-27cf-41f0-8186-e96d34c5139d",
+      "name": "create tables for alter & truncate",
+      "credentials": {
+        "postgres": {
+          "id": "8CCQqgahqVOpfPOO",
+          "name": "Postgres kpi Acc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "ALTER TABLE CustomersDel ADD email VARCHAR(100);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        880,
+        160
+      ],
+      "id": "801d385e-84ba-4357-87e4-e915a87bfa5f",
+      "name": "add email via alter",
+      "credentials": {
+        "postgres": {
+          "id": "8CCQqgahqVOpfPOO",
+          "name": "Postgres kpi Acc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO CustomersDel (name, city, email) VALUES\n('Ali', 'Istanbul', 'ali@example.com'),\n('Ayse', 'Ankara', 'ayse@example.com'),\n('Mehmet', 'Izmir', 'mehmet@example.com');",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1100,
+        160
+      ],
+      "id": "818bc7a5-763e-4995-878b-9ae764da8dd6",
+      "name": "insert values",
+      "credentials": {
+        "postgres": {
+          "id": "8CCQqgahqVOpfPOO",
+          "name": "Postgres kpi Acc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM CustomersDel;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1340,
+        160
+      ],
+      "id": "4239a4d2-4619-43e4-a012-13ab82dc77da",
+      "name": "select all",
+      "credentials": {
+        "postgres": {
+          "id": "8CCQqgahqVOpfPOO",
+          "name": "Postgres kpi Acc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM CustomersDel;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        660,
+        160
+      ],
+      "id": "4386a8a0-8515-463a-ae49-f7eeabfd1292",
+      "name": "select all to check it",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "8CCQqgahqVOpfPOO",
+          "name": "Postgres kpi Acc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "TRUNCATE TABLE CustomersDel RESTART IDENTITY;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        440,
+        160
+      ],
+      "id": "d0bc016c-2239-45da-b1c6-e10e68b23eaf",
+      "name": "truncate table",
+      "credentials": {
+        "postgres": {
+          "id": "8CCQqgahqVOpfPOO",
+          "name": "Postgres kpi Acc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT c.name, c.city, o.product\nFROM Customers c\nINNER JOIN Orders o ON c.customer_id = o.customer_id;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        500,
+        -480
+      ],
+      "id": "4794cdc6-fb53-47cb-8b0e-5cfe2625c123",
+      "name": "inner join",
+      "credentials": {
+        "postgres": {
+          "id": "8CCQqgahqVOpfPOO",
+          "name": "Postgres kpi Acc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT city AS data FROM Customers\nUNION\nSELECT product FROM Orders;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        520,
+        -260
+      ],
+      "id": "317b6210-f1c1-4406-9bf7-31831c094fab",
+      "name": "union",
+      "credentials": {
+        "postgres": {
+          "id": "8CCQqgahqVOpfPOO",
+          "name": "Postgres kpi Acc"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT city AS data FROM Customers\nUNION ALL\nSELECT product FROM Orders;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        520,
+        -80
+      ],
+      "id": "d9808e55-c3e4-4f7a-a258-644f59b6f3cc",
+      "name": "union all",
+      "credentials": {
+        "postgres": {
+          "id": "8CCQqgahqVOpfPOO",
+          "name": "Postgres kpi Acc"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "create tables",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "create tables for alter & truncate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create tables": {
+      "main": [
+        [
+          {
+            "node": "inner join",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "union",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "union all",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create tables for alter & truncate": {
+      "main": [
+        [
+          {
+            "node": "truncate table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add email via alter": {
+      "main": [
+        [
+          {
+            "node": "insert values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "insert values": {
+      "main": [
+        [
+          {
+            "node": "select all",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select all to check it": {
+      "main": [
+        [
+          {
+            "node": "add email via alter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "truncate table": {
+      "main": [
+        [
+          {
+            "node": "select all to check it",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "inner join": {
+      "main": [
+        []
+      ]
+    },
+    "union": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4c5f5a23-b7e4-4612-9eb9-f15ff6418eb0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b5bf8a02887b0ed5597257fc4e6136a651d86ed929fbc1399545b451cfff197c"
+  },
+  "id": "S0FYw7SdvlVXgPu6",
+  "tags": []
+}
